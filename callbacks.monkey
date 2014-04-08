@@ -60,7 +60,7 @@ Function RemoveCallbackReceiver:Void(receiver:CallbackReceiver)
 	' --- remove a callback receiver ---
 	Local list:ArrayList<CallbackReceiver>
 	For Local listId:= EachIn receiverIdLists.Keys()
-		list = receiverIdLists.ValueForKey(listId)
+		list = receiverIdLists.Get(listId)
 		If list
 			'remove receiver from list
 			list.Remove(receiver)
@@ -76,11 +76,11 @@ Function AddCallbackReceiver:Void(receiver:CallbackReceiver, id:int)
 	If id = 0 Return
 	
 	'see if the list exists
-	Local list:= receiverIdLists.ValueForKey(id)
+	Local list:= receiverIdLists.Get(id)
 	If list = Null
 		'create new list
 		list = New ArrayList<CallbackReceiver>
-		receiverIdLists.Insert(id, list)
+		receiverIdLists.Set(id, list)
 	EndIf
 	
 	'add receiver to list
@@ -89,7 +89,7 @@ End
 
 Function FireCallback:Bool(id:Int, source:Object, data:Object)
 	' --- fires a callback ---
-	Local list:ArrayList<CallbackReceiver> = receiverIdLists.ValueForKey(id)
+	Local list:ArrayList<CallbackReceiver> = receiverIdLists.Get(id)
 	If list
 		'do debug log
 		#IF DEBUG_CALLBACKS
