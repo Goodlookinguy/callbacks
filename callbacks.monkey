@@ -14,23 +14,23 @@ Import skn3.arraylist
 Private
 Global callbackIdCount:Int
 Global callbackIds:= New ArrayList<String>
-Global recieverIdLists:= New IntMap<ArrayList<CallbackReciever>>
-Global debugReciever:CallbackDebugReciever
+Global receiverIdLists:= New IntMap<ArrayList<CallbackReceiver>>
+Global debugReceiver:CallbackDebugReceiver
 Public
 
 'public interface
-Interface CallbackReciever
+Interface CallbackReceiver
 	Method OnCallback:Bool(id:Int, source:Object, data:Object)
 End
 
-Interface CallbackDebugReciever
+Interface CallbackDebugReceiver
 	Method OnDebugCallback:Void(id:Int, source:Object, data:Object)
 End
 
 'public api
-Function SetCallbackDebugReciever:Void(reciever:CallbackDebugReciever)
-	' --- change reciever of debug callbacks ---
-	debugReciever = reciever
+Function SetCallbackDebugReceiver:Void(receiver:CallbackDebugReceiver)
+	' --- change receiver of debug callbacks ---
+	debugReceiver = receiver
 End
 
 Function RegisterCallbackId:Int(name:string)
@@ -51,52 +51,52 @@ Function GetCallbackId:String(id:Int)
 	Return callbackIds.data[id - 1]
 End
 
-Function ClearCallbackRecievers:Void(id:Int)
-	' --- this will clear all recievers for an id ---
-	recieverIdLists.Remove(id)
+Function ClearCallbackReceivers:Void(id:Int)
+	' --- this will clear all receivers for an id ---
+	receiverIdLists.Remove(id)
 End
 
-Function RemoveCallbackReciever:Void(reciever:CallbackReciever)
-	' --- remove a callback reciever ---
-	Local list:ArrayList<CallbackReciever>
-	For Local listId:= EachIn recieverIdLists.Keys()
-		list = recieverIdLists.ValueForKey(listId)
+Function RemoveCallbackReceiver:Void(receiver:CallbackReceiver)
+	' --- remove a callback receiver ---
+	Local list:ArrayList<CallbackReceiver>
+	For Local listId:= EachIn receiverIdLists.Keys()
+		list = receiverIdLists.ValueForKey(listId)
 		If list
-			'remove reciever from list
-			list.Remove(reciever)
+			'remove receiver from list
+			list.Remove(receiver)
 			
 			'check for empty list
-			If list.IsEmpty() recieverIdLists.Remove(listId)
+			If list.IsEmpty() receiverIdLists.Remove(listId)
 		EndIf
 	Next
 End
 
-Function AddCallbackReciever:Void(reciever:CallbackReciever, id:int)
-	' --- add a callback reciever ---
+Function AddCallbackReceiver:Void(receiver:CallbackReceiver, id:int)
+	' --- add a callback receiver ---
 	If id = 0 Return
 	
 	'see if the list exists
-	Local list:= recieverIdLists.ValueForKey(id)
+	Local list:= receiverIdLists.ValueForKey(id)
 	If list = Null
 		'create new list
-		list = New ArrayList<CallbackReciever>
-		recieverIdLists.Insert(id, list)
+		list = New ArrayList<CallbackReceiver>
+		receiverIdLists.Insert(id, list)
 	EndIf
 	
-	'add reciever to list
-	If list.Contains(reciever) = False list.AddLast(reciever)
+	'add receiver to list
+	If list.Contains(receiver) = False list.AddLast(receiver)
 End
 
 Function FireCallback:Bool(id:Int, source:Object, data:Object)
 	' --- fires a callback ---
-	Local list:= recieverIdLists.ValueForKey(id)
+	Local list:ArrayList<CallbackReceiver> = receiverIdLists.ValueForKey(id)
 	If list
 		'do debug log
 		#IF DEBUG_CALLBACKS
-			If debugReciever debugReciever.OnDebugCallback(id, source, data)
+			If debugReceiver debugReceiver.OnDebugCallback(id, source, data)
 		#EndIf
 		
-		'fire callback for all recievers
+		'fire callback for all receivers
 		For Local index:= 0 Until list.count
 			'check for a callback blocking further execution
 			If list.data[index].OnCallback(id, source, data) = True Return True
@@ -114,20 +114,20 @@ End
 
 Function FireCallback:Bool(id:Int, source:Object, data:String)
 	' --- shortcut to auto box ---
-	Return FireCallback(id, source, Object(StringObject(data)))
+	Return FireCallback(id, source, BoxString(data))
 End
 
 Function FireCallback:Bool(id:Int, source:Object, data:Bool)
 	' --- shortcut to auto box ---
-	Return FireCallback(id, source, Object(BoolObject(data)))
+	Return FireCallback(id, source, BoxBool(data))
 End
 
 Function FireCallback:Bool(id:Int, source:Object, data:int)
 	' --- shortcut to auto box ---
-	Return FireCallback(id, source, Object(IntObject(data)))
+	Return FireCallback(id, source, BoxInt(data))
 End
 
 Function FireCallback:Bool(id:Int, source:Object, data:Float)
 	' --- shortcut to auto box ---
-	Return FireCallback(id, source, Object(FloatObject(data)))
+	Return FireCallback(id, source, BoxFloat(data))
 End
