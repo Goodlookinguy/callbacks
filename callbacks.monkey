@@ -9,13 +9,15 @@ Import monkey.boxes
 Import monkey.map
 Import skn3.arraylist
 
-#DEBUG_CALLBACKS = false
+#DEBUG_CALLBACKS = False
 
 Private
 Global callbackIdCount:Int
 Global callbackIds:= New ArrayList<String>
 Global receiverIdLists:= New IntMap<ArrayList<CallbackReceiver>>
+#IF DEBUG_CALLBACKS
 Global debugReceiver:CallbackDebugReceiver
+#EndIf
 Public
 
 'public interface
@@ -30,7 +32,9 @@ End
 'public api
 Function SetCallbackDebugReceiver:Void(receiver:CallbackDebugReceiver)
 	' --- change receiver of debug callbacks ---
+	#IF DEBUG_CALLBACKS
 	debugReceiver = receiver
+	#EndIf
 End
 
 Function RegisterCallbackId:Int(name:string)
