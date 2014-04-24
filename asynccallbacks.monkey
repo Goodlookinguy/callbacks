@@ -26,7 +26,7 @@ Function SetAsyncMaxFrameTime:Void( maxTime:Int )
 End
 
 'Summary: Attempts as many async calls as the threshold allows this frame. This is required for async calls to work.
-Function TryToUpdateAysncCalls:Void()
+Function TryToUpdateAsyncCalls:Void()
 	#If ASYNC_CALLBACKS
 	If asyncBacklogID.count = 0 Then Return
 	
