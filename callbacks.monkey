@@ -13,9 +13,9 @@ Import skn3.arraylist
 
 Private
 Global callbackIdCount:Int
-Global callbackIds:= New ArrayList<String>
-Global receiverIdLists:= New IntMap<ArrayList<CallbackReceiver>>
-#IF DEBUG_CALLBACKS
+Global callbackIds:= New ArrayList<String>()
+Global receiverIdLists:= New IntMap<ArrayList<CallbackReceiver>>()
+#If DEBUG_CALLBACKS
 Global debugReceiver:CallbackDebugReceiver
 #EndIf
 Public
@@ -135,3 +135,4 @@ Function FireCallback:Bool(id:Int, source:Object, data:Float)
 	' --- shortcut to auto box ---
 	Return FireCallback(id, source, BoxFloat(data))
 End
+
