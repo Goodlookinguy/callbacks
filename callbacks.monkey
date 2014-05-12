@@ -67,7 +67,7 @@ Function RemoveCallbackReceiver:Void(receiver:CallbackReceiver)
 		list = receiverIdLists.Get(listId)
 		If list
 			'remove receiver from list
-			list.Remove(receiver)
+			list.RemoveEach(receiver)
 			
 			'check for empty list
 			If list.IsEmpty() receiverIdLists.Remove(listId)
